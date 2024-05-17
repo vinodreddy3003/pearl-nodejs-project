@@ -11,7 +11,7 @@ env:
   ECR_REPOSITORY: web-app        # set this to your Amazon ECR repository name
   ECS_SERVICE: web-service                 # set this to your Amazon ECS service name
   ECS_CLUSTER: main-ecs-cluster                 # set this to your Amazon ECS cluster name
-  ECS_TASK_DEFINITION: taskdefinition.json # set this to the path to your Amazon ECS task definition
+  ECS_TASK_DEFINITION: ecs-task-definition.json # set this to the path to your Amazon ECS task definition
                                                # file, e.g. .aws/task-definition.json
   CONTAINER_NAME: web-task           # set this to the name of the container in the
                                                # containerDefinitions section of your task definition
@@ -28,7 +28,18 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+      
+    - name: Create ECS task definition
+      id: create_task_def
+      run: |
+        ecs_task_definition=$(cat ecs-task-definition.json)
+        echo "::set-output name=task-definition::$ecs_task_definition"
 
+    - name: Register ECS task definition
+      id: register_task_def
+      uses: aws-actions/amazon-ecs-register-task-definition@v1
+      with:
+        task-definition: ${{ steps.create_task_def.outputs.task-definition }}
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:

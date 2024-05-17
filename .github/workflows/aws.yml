@@ -54,35 +54,14 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-    - name: Render ECS task definition
-      id: render_task_def
+    
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
-        task-definition: ecs-task-definition.json
-        container-name: my-web-app
-        image: my-web-app-image:latest
-
-    - name: Register ECS task definition
-      id: register_task_def
-      uses: aws-actions/amazon-ecs-register-task-definition@v1
-      with:
-        task-definition: ${{ steps.render_task_def.outputs.task-definition }}
-
-    - name: Deploy to ECS service
-      id: deploy_service
-      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-      with:
-        service: my-ecs-service
-        cluster: my-ecs-cluster
-        wait-for-service-stability: true
-        task-definition: ${{ steps.register_task_def.outputs.task-definition }}
-    # - name: Fill in the new image ID in the Amazon ECS task definition
-    #   id: task-def
-    #   uses: aws-actions/amazon-ecs-render-task-definition@v1
-    #   with:
-    #     task-definition: ${{ env.ECS_TASK_DEFINITION }}
-    #     container-name: ${{ env.CONTAINER_NAME }}
-    #     image: ${{ steps.build-image.outputs.image }}
+        task-definition: ${{ env.ECS_TASK_DEFINITION }}
+        container-name: ${{ env.CONTAINER_NAME }}
+        image: ${{ steps.build-image.outputs.image }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1

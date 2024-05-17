@@ -1,13 +1,15 @@
-FROM node:alpine
-# Set the working directory in the container
+FROM node:14
+
+# Create app directory
 WORKDIR /app
-# Copy package.json and package-lock.json to the working directory
+
+# Install app dependencies
 COPY package*.json ./
-# Install dependencies
 RUN npm install
-# Copy the remaining application code to the working directory
+
+# Bundle app source
 COPY . .
-# Expose port 3000
-EXPOSE 3000
-# Command to run the application
-CMD ["npm", "start"]
+
+# Expose port and start the app
+EXPOSE 8080
+CMD [ "node", "server.js" ]

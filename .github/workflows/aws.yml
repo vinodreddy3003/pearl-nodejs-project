@@ -11,7 +11,7 @@ env:
   ECR_REPOSITORY: web-app        # set this to your Amazon ECR repository name
   ECS_SERVICE: web-service                 # set this to your Amazon ECS service name
   ECS_CLUSTER: main-ecs-cluster                 # set this to your Amazon ECS cluster name
-  ECS_TASK_DEFINITION: .aws/ecs/task-definition/web-task.json # set this to the path to your Amazon ECS task definition
+  ECS_TASK_DEFINITION: 028240321190.dkr.ecr.us-east-1.amazonaws.com/web-app:latest # set this to the path to your Amazon ECS task definition
                                                # file, e.g. .aws/task-definition.json
   CONTAINER_NAME: web-task           # set this to the name of the container in the
                                                # containerDefinitions section of your task definition
